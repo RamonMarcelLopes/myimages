@@ -26,6 +26,10 @@ function carregar() {
     './imgs/miscellaneous/petLove.png',
     './imgs/miscellaneous/qualofluxo.png',
     './imgs/miscellaneous/refri.png',
+    './imgs/miscellaneous/capi.png',
+    './imgs/miscellaneous/dog.png',
+    './imgs/miscellaneous/peackyblinder.png',
+    './imgs/miscellaneous/tropadoskexada.png',
   ];
 
   imagem.forEach((imagem) => {
@@ -33,7 +37,7 @@ function carregar() {
       'beforeend',
       `
     <div id="content"> 
-    <img id="fotosmisc" src="${imagem}" alt="fotos" /> 
+    <img id="fotosmisc" src="${imagem}" alt="imagem" /> 
     </div>
     
     `

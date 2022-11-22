@@ -40,9 +40,10 @@ header {
   -webkit-text-stroke: #23ec69 0.1px;
 }
 #fotosmisc {
-  padding: 5px;
-  height: 90%;
-  width: 90%;
+  padding: 1px;
+  height: 95%;
+  width: 95%;
+  border-radius: 5px;
 }
 .container-all {
   flex-wrap: wrap;
@@ -58,7 +59,7 @@ header {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  margin-top: 40px;
+  margin-top: 50px;
   width: 100%;
   height: 100%;
 }
@@ -68,11 +69,17 @@ header {
   margin: 10px;
   height: 150px;
   width: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: copy;
 }
 .header-img {
   height: 90%;
 }
 footer {
+  position: fixed;
+  bottom: 5px;
   width: 100%;
   text-align: start;
   margin-left: 15px;
