@@ -25,7 +25,7 @@ function carregar() {
     './imgs/miscellaneous/fantauva.png',
     './imgs/miscellaneous/petLove.png',
     './imgs/miscellaneous/qualofluxo.png',
-    './imgs/miscellaneous/refrigerantes.png',
+    './imgs/miscellaneous/refri.png',
   ];
 
   imagem.forEach((imagem) => {
