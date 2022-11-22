@@ -19,6 +19,7 @@ function carregar() {
     './imgs/icons/search-white.png',
     './imgs/icons/users.png',
     './imgs/logos/logoequipe4.png',
+    './imgs/logos/jacareimage.png',
     './imgs/miscellaneous/coisaboa.png',
     './imgs/miscellaneous/discordjs.png',
     './imgs/miscellaneous/fantauva.png',
@@ -31,9 +32,9 @@ function carregar() {
     pegadiv.insertAdjacentHTML(
       'beforeend',
       `
-    
-    <img src="${imagem}" alt="fotos" /> 
-    
+    <div id="content"> 
+    <img id="fotosmisc" src="${imagem}" alt="fotos" /> 
+    </div>
     
     `
     );
