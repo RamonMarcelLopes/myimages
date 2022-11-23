@@ -19,6 +19,7 @@ function carregar() {
     './imgs/icons/search-white.png',
     './imgs/icons/users.png',
     './imgs/logos/logoequipe4.png',
+    './imgs/logos/silemar.png',
     './imgs/logos/jacareimage.png',
     './imgs/miscellaneous/coisaboa.png',
     './imgs/miscellaneous/discordjs.png',
