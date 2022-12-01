@@ -31,6 +31,7 @@ function carregar() {
     './imgs/miscellaneous/dog.png',
     './imgs/miscellaneous/peackyblinder.png',
     './imgs/miscellaneous/tropadoskexada.png',
+    './imgs/miscellaneous/recibo.png',
   ];
 
   imagem.forEach((imagem) => {
