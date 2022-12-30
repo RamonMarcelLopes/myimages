@@ -32,6 +32,8 @@ function carregar() {
     './imgs/miscellaneous/peackyblinder.png',
     './imgs/miscellaneous/tropadoskexada.png',
     './imgs/miscellaneous/recibo.png',
+    './imgs/miscellaneous/cara.png',
+    './imgs/miscellaneous/coroa.png',
   ];
 
   imagem.forEach((imagem) => {
