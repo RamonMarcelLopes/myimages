@@ -3,7 +3,7 @@ let pegadiv = document.querySelector('#imgList');
 function carregar() {
   let imagem = [
     './imgs/icons/add-friend.png',
-    './imgs/icons/castem.png',
+    './imgs/logos/castem.png',
     './imgs/icons/correct.png',
     './imgs/icons/addfriend-black.png',
     './imgs/icons/arrow-down.png',
