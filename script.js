@@ -35,6 +35,7 @@ function carregar() {
     './imgs/miscellaneous/recibo.png',
     './imgs/miscellaneous/cara.png',
     './imgs/miscellaneous/coroa.png',
+    './imgs/miscellaneous/verbs.png',
   ];
 
   imagem.forEach((imagem) => {
