@@ -89,3 +89,10 @@ footer {
   font-size: large;
   -webkit-text-stroke: #23ec69 0.1px;
 }
+#a-img {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
