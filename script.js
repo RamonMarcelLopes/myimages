@@ -1,6 +1,8 @@
 let pegadiv = document.querySelector('#imgList');
+let imgSalva = document.getElementById('fotosmisc');
+let href = window.location.href;
 
-function carregar() {
+async function carregar() {
   let imagem = [
     './imgs/icons/add-friend.png',
     './imgs/logos/castem.png',
@@ -43,12 +45,16 @@ function carregar() {
       'beforeend',
       `
     <div id="content"> 
+    <a id="a-img" href="${href}/${imagem}" target="_blank">
     <img id="fotosmisc" src="${imagem}" alt="imagem" /> 
+    </a>
     </div>
     
     `
     );
   });
 }
+
 carregar();
+
 //import brain from './imgs/icons/brain.png';
