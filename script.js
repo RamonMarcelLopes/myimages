@@ -38,6 +38,7 @@ async function carregar() {
     './imgs/miscellaneous/cara.png',
     './imgs/miscellaneous/coroa.png',
     './imgs/miscellaneous/verbs.png',
+    './imgs/logos/whatsapp.png',
   ];
 
   imagem.forEach((imagem) => {
