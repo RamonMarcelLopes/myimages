@@ -51,7 +51,7 @@ async function carregar() {
       'beforeend',
       `
     <div id="content"> 
-    <a id="a-img" href="${href}/${imagem}" target="_blank">
+    <a id="a-img" href="${href}${imagem}" target="_blank">
     <img id="fotosmisc" src="${imagem}" alt="imagem" /> 
     </a>
     </div>
