@@ -44,6 +44,8 @@ async function carregar() {
     './imgs/logos/deletar.svg',
     './imgs/logos/paleta.svg',
     './imgs/logos/sacola.svg',
+    './imgs/logos/prisma.svg',
+    './imgs/logos/nest.png',
   ];
 
   imagem.forEach((imagem) => {
