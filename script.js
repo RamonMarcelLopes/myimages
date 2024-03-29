@@ -39,6 +39,11 @@ async function carregar() {
     './imgs/miscellaneous/coroa.png',
     './imgs/miscellaneous/verbs.png',
     './imgs/logos/whatsapp.png',
+    './imgs/logos/logogelado.svg',
+    './imgs/logos/atualizar.svg',
+    './imgs/logos/deletar.svg',
+    './imgs/logos/paleta.svg',
+    './imgs/logos/sacola.svg',
   ];
 
   imagem.forEach((imagem) => {
