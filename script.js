@@ -38,6 +38,7 @@ async function carregar() {
     './imgs/miscellaneous/cara.png',
     './imgs/miscellaneous/coroa.png',
     './imgs/miscellaneous/verbs.png',
+    './imgs/miscellaneous/spinner.gif',
     './imgs/logos/whatsapp.png',
     './imgs/logos/logogelado.svg',
     './imgs/logos/atualizar.svg',
