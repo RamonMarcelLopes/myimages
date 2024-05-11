@@ -50,6 +50,7 @@ async function carregar() {
     './imgs/logos/jacarestw.png',
     'https://github.com/RamonMarcelLopes/RamonMarcelLopes/raw/output/github-contribution-grid-snake-dark.svg',
     './imgs/miscellaneous/ramon.jpeg',
+    './imgs/miscellaneous/ns.png',
   ];
 
   imagem.forEach((imagem) => {
