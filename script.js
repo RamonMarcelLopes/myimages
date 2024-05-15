@@ -52,6 +52,7 @@ async function carregar() {
     './imgs/miscellaneous/ramon.jpeg',
     './imgs/miscellaneous/ns.png',
     './imgs/miscellaneous/elgeladon.png',
+    './imgs/miscellaneous/XboxSwagger.png',
   ];
 
   imagem.forEach((imagem) => {
