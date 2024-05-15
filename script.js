@@ -51,6 +51,7 @@ async function carregar() {
     'https://github.com/RamonMarcelLopes/RamonMarcelLopes/raw/output/github-contribution-grid-snake-dark.svg',
     './imgs/miscellaneous/ramon.jpeg',
     './imgs/miscellaneous/ns.png',
+    './imgs/miscellaneous/elgeladon.png',
   ];
 
   imagem.forEach((imagem) => {
