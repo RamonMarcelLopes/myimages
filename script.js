@@ -54,6 +54,7 @@ async function carregar() {
     './imgs/miscellaneous/elgeladon.png',
     './imgs/miscellaneous/XboxSwagger.png',
     './imgs/icons/defaultUser.jpg',
+    './imgs/miscellaneous/cda-front.png',
   ];
 
   imagem.forEach((imagem) => {
