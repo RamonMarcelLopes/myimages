@@ -57,6 +57,7 @@ async function carregar() {
     './imgs/miscellaneous/cda-front.png',
     './imgs/miscellaneous/CDA_SERVER.png',
     './imgs/logos/lps.png',
+    './imgs/miscellaneous/triang.png',
   ];
 
   imagem.forEach((imagem) => {
