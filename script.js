@@ -58,7 +58,7 @@ async function carregar() {
     "./imgs/logos/lps.png",
     "./imgs/miscellaneous/triang.png",
     "./imgs/logos/musculacao.png",
-    "./imgs/discord/geenTicket.png",
+    "./imgs/discord/greenTicket.png",
     "./imgs/discord/Porca.jpg",
   ];
 
