@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 // ============================================================
 const FOLDER_BLACKLIST = [
     "suplementos",
+    "paletas"
 ];
 // ============================================================
 
