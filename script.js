@@ -34,11 +34,14 @@ async function carregar() {
     const { images } = await res.json();
     const combined = [...images, ...EXTRAS];
 
+    const VIDEO_EXTS = [".mp4", ".webm", ".ogg", ".mov"];
     allImages = combined.map((src) => {
       const parts  = src.replace(/^\.\//, "").split("/");
       const name   = parts[parts.length - 1];
       const folder = parts.length >= 2 ? parts[parts.length - 2] : "outros";
-      return { src, name, folder };
+      const ext    = "." + name.split(".").pop().toLowerCase();
+      const type   = VIDEO_EXTS.includes(ext) ? "video" : "image";
+      return { src, name, folder, type };
     });
 
     buildFilters();
@@ -109,7 +112,6 @@ function renderAll() {
 
   imgCount.textContent = `${filtered.length} imagem${filtered.length !== 1 ? "s" : ""}`;
 
-  // Skeletons enquanto carrega
   imgList.innerHTML = "";
   if (filtered.length === 0) {
     emptyState.style.display = "flex";
@@ -117,29 +119,26 @@ function renderAll() {
   }
   emptyState.style.display = "none";
 
-  // Cria um slot (skeleton) por imagem e guarda referência direta
-  const slots = filtered.map(() => {
-    const sk = document.createElement("div");
-    sk.className = "skeleton";
-    imgList.appendChild(sk);
-    return sk;
-  });
-
-  // Constrói cada card e substitui o slot correspondente
+  // Sem skeleton — cada card já aparece no DOM com mídia invisível (opacity 0)
+  // e faz fade-in assim que carrega. Isso evita o bug de timing do replaceWith.
   filtered.forEach((img, idx) => {
     const card = buildCard(img, idx);
-    slots[idx].replaceWith(card);
+    imgList.appendChild(card);
   });
 }
 
 function buildCard(img, idx) {
   const card = document.createElement("div");
-  card.className = "img-card";
+  card.className = "img-card card-loading";
   card.style.animationDelay = `${Math.min(idx * 0.025, 0.4)}s`;
 
   if (viewMode === "grid") {
+    const mediaTpl = img.type === "video"
+        ? `<video src="${img.src}" class="loading" muted playsinline preload="metadata"></video>
+         <div class="card-video-badge">▶</div>`
+        : `<img src="${img.src}" alt="${img.name}" class="loading" />`;
     card.innerHTML = `
-      <img src="${img.src}" alt="${img.name}" class="loading" />
+      ${mediaTpl}
       <div class="card-overlay">
         <span class="card-folder">${img.folder}</span>
         <span class="card-name">${img.name}</span>
@@ -151,8 +150,11 @@ function buildCard(img, idx) {
       </div>
     `;
   } else {
+    const mediaTpl = img.type === "video"
+        ? `<video src="${img.src}" class="loading" muted playsinline preload="metadata"></video>`
+        : `<img src="${img.src}" alt="${img.name}" class="loading" />`;
     card.innerHTML = `
-      <img src="${img.src}" alt="${img.name}" class="loading" />
+      ${mediaTpl}
       <div class="list-info">
         <span class="list-name">${img.name}</span>
         <span class="list-folder">${img.folder}</span>
@@ -165,13 +167,34 @@ function buildCard(img, idx) {
     `;
   }
 
-  const imgEl = card.querySelector("img");
-  imgEl.addEventListener("load", () => imgEl.classList.remove("loading"));
-  imgEl.addEventListener("error", () => {
-    imgEl.classList.remove("loading");
-    imgEl.style.opacity = "0.15";
-    imgEl.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3E%3Cpath d='M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z'/%3E%3C/svg%3E";
-  });
+  if (img.type === "video") {
+    const videoEl = card.querySelector("video");
+    const reveal = () => { videoEl.classList.remove("loading"); card.classList.remove("card-loading"); };
+    videoEl.addEventListener("loadedmetadata", reveal, { once: true });
+    videoEl.addEventListener("error", () => {
+      reveal();
+      videoEl.style.opacity = "0.15";
+    }, { once: true });
+    // Se já tem metadata (cache), revela imediatamente
+    if (videoEl.readyState >= 1) reveal();
+    // Hover para preview (sem autoplay no card)
+    card.addEventListener("mouseenter", () => { videoEl.currentTime = 0; videoEl.play().catch(() => {}); });
+    card.addEventListener("mouseleave", () => { videoEl.pause(); videoEl.currentTime = 0; });
+  } else {
+    const imgEl = card.querySelector("img");
+    const reveal = () => { imgEl.classList.remove("loading"); card.classList.remove("card-loading"); };
+    if (imgEl.complete) {
+      // Imagem já em cache — fade-in rápido no próximo frame
+      requestAnimationFrame(reveal);
+    } else {
+      imgEl.addEventListener("load", reveal, { once: true });
+      imgEl.addEventListener("error", () => {
+        reveal();
+        imgEl.style.opacity = "0.15";
+        imgEl.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3E%3Cpath d='M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z'/%3E%3C/svg%3E";
+      }, { once: true });
+    }
+  }
 
   card.querySelector('[data-action="open"]').addEventListener("click", (e) => { e.stopPropagation(); openLightbox(idx); });
   card.querySelector('[data-action="copy"]').addEventListener("click", (e) => { e.stopPropagation(); copyPath(img.src); });
@@ -193,15 +216,42 @@ function openLightbox(idx) {
 function closeLightbox() {
   lightbox.classList.remove("open");
   document.body.style.overflow = "";
+  // Para vídeo se estiver tocando
+  const vid = document.getElementById("lbVideo");
+  if (vid) { vid.pause(); vid.src = ""; }
   resetZoom();
 }
 
 function showLbImage() {
-  const img = filtered[lbIndex];
-  lbImg.src = img.src;
-  lbName.textContent = `${img.folder} / ${img.name}`;
+  const item = filtered[lbIndex];
+  lbName.textContent = `${item.folder} / ${item.name}`;
   lbPrev.style.opacity = lbIndex > 0 ? "1" : "0.3";
   lbNext.style.opacity = lbIndex < filtered.length - 1 ? "1" : "0.3";
+
+  // Limpa conteúdo anterior
+  lbImgContainer.innerHTML = "";
+  resetZoom();
+
+  if (item.type === "video") {
+    const vid = document.createElement("video");
+    vid.id = "lbVideo";
+    vid.src = item.src;
+    vid.controls = true;
+    vid.autoplay = true;
+    vid.style.maxWidth = "100%";
+    vid.style.maxHeight = "80vh";
+    vid.style.borderRadius = "8px";
+    lbImgContainer.appendChild(vid);
+    // Desativa zoom em vídeos
+    lbImgContainer.style.cursor = "default";
+  } else {
+    const img = document.createElement("img");
+    img.id = "lbImg";
+    img.src = item.src;
+    img.alt = item.name;
+    lbImgContainer.appendChild(img);
+    lbImgContainer.style.cursor = "";
+  }
 }
 
 lbClose.addEventListener("click", closeLightbox);
@@ -225,17 +275,20 @@ let isDragging = false;
 let dragStartX, dragStartY, dragOriginX, dragOriginY;
 
 function applyTransform() {
-  lbImg.style.transform = `scale(${zoomScale}) translate(${zoomX}px, ${zoomY}px)`;
+  const el = document.getElementById("lbImg");
+  if (el) el.style.transform = `scale(${zoomScale}) translate(${zoomX}px, ${zoomY}px)`;
 }
 
 function resetZoom() {
   zoomScale = 1; zoomX = 0; zoomY = 0;
-  applyTransform();
+  const el = document.getElementById("lbImg");
+  if (el) el.style.transform = "";
   lbImgContainer.classList.remove("zoomed");
 }
 
-// Scroll para zoom
+// Scroll para zoom (só para imagens)
 lbImgContainer.addEventListener("wheel", (e) => {
+  if (!document.getElementById("lbImg")) return;
   e.preventDefault();
   const delta = e.deltaY > 0 ? -0.15 : 0.15;
   zoomScale = Math.min(Math.max(1, zoomScale + delta), 5);
@@ -244,8 +297,9 @@ lbImgContainer.addEventListener("wheel", (e) => {
   applyTransform();
 }, { passive: false });
 
-// Click para zoom 2x / reset
+// Click para zoom 2x / reset (só para imagens)
 lbImgContainer.addEventListener("click", (e) => {
+  if (!document.getElementById("lbImg")) return;
   if (isDragging) return;
   if (zoomScale > 1) { resetZoom(); return; }
   zoomScale = 2.5;

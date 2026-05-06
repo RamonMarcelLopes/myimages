@@ -77,14 +77,20 @@ header {
 
 /* sort */
 #sortSelect {
-  background: var(--bg3); border: 1px solid var(--border);
+  appearance: none; -webkit-appearance: none;
+  background: var(--bg3)
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7280'/%3E%3C/svg%3E")
+  no-repeat right 10px center;
+  border: 1px solid var(--border);
   border-radius: 8px; color: var(--text-dim);
   font-family: 'Space Mono', monospace; font-size: 0.72rem;
-  padding: 7px 10px; outline: none; cursor: pointer;
-  transition: border-color 0.2s; flex-shrink: 0;
+  padding: 7px 28px 7px 12px;
+  outline: none; cursor: pointer;
+  transition: border-color 0.2s, color 0.2s; flex-shrink: 0;
+  height: 32px;
 }
 #sortSelect:focus, #sortSelect:hover { border-color: var(--border-bright); color: var(--text); }
-#sortSelect option { background: var(--bg2); }
+#sortSelect option { background: var(--bg2); color: var(--text); }
 
 /* view toggle */
 .view-toggle { display: flex; gap: 4px; flex-shrink: 0; }
@@ -130,17 +136,20 @@ header {
   gap: 12px; width: 100%;
 }
 
-/* ── SKELETON ── */
-.skeleton {
-  position: relative; border: 1px solid var(--border);
-  border-radius: 10px; overflow: hidden;
-  background: var(--card); aspect-ratio: 1;
+/* ── SKELETON / CARD LOADING ── */
+/* O shimmer fica no próprio card enquanto a mídia não carregou */
+.img-card.card-loading::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 2;
+  background: var(--card);
+  border-radius: 10px;
 }
-.skeleton::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+.img-card.card-loading::after {
+  content: ''; position: absolute; inset: 0; z-index: 3;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
+  border-radius: 10px;
 }
 @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
@@ -156,6 +165,21 @@ header {
 
 .img-card img { width: 100%; height: 100%; object-fit: contain; padding: 6px; transition: opacity 0.3s; }
 .img-card img.loading { opacity: 0; }
+
+/* Vídeo no card */
+.img-card video {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: opacity 0.3s; display: block;
+}
+.img-card video.loading { opacity: 0; }
+
+/* Badge de vídeo */
+.card-video-badge {
+  position: absolute; top: 8px; left: 8px;
+  background: rgba(0,0,0,0.65); color: #fff;
+  font-size: 0.7rem; padding: 2px 7px; border-radius: 20px;
+  pointer-events: none; z-index: 1;
+}
 
 .card-overlay {
   position: absolute; inset: 0; background: rgba(0,0,0,0.78);
@@ -183,10 +207,6 @@ header {
   grid-template-columns: unset;
 }
 
-#imgList.list-mode .skeleton {
-  aspect-ratio: unset; height: 64px; border-radius: 8px;
-}
-
 #imgList.list-mode .img-card {
   aspect-ratio: unset; display: flex; align-items: center;
   gap: 14px; padding: 10px 14px; border-radius: 8px; height: 64px;
@@ -195,6 +215,9 @@ header {
 
 #imgList.list-mode .img-card img {
   width: 44px; height: 44px; flex-shrink: 0; object-fit: contain; padding: 0;
+}
+#imgList.list-mode .img-card video {
+  width: 44px; height: 44px; flex-shrink: 0; object-fit: cover; border-radius: 4px;
 }
 
 #imgList.list-mode .card-overlay { display: none; }

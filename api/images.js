@@ -15,6 +15,7 @@ const FOLDER_BLACKLIST = [
 // ============================================================
 
 const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp"];
+const VIDEO_EXTENSIONS = [".mp4", ".webm", ".ogg", ".mov"];
 
 function scanImages(dir, blacklist, rootDir) {
     const results = [];
@@ -28,7 +29,7 @@ function scanImages(dir, blacklist, rootDir) {
             results.push(...scanImages(fullPath, blacklist, rootDir));
         } else if (entry.isFile()) {
             const ext = path.extname(entry.name).toLowerCase();
-            if (IMAGE_EXTENSIONS.includes(ext)) {
+            if (IMAGE_EXTENSIONS.includes(ext) || VIDEO_EXTENSIONS.includes(ext)) {
                 const webPath =
                     "./imgs/" + path.relative(rootDir, fullPath).replace(/\\/g, "/");
                 results.push(webPath);
