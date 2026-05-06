@@ -9,9 +9,7 @@ const __dirname = path.dirname(__filename);
 //  BLACKLIST — nomes de pastas que quer ignorar
 // ============================================================
 const FOLDER_BLACKLIST = [
-    "discord",
-    // "icons",
-    // "suplementos",
+    "suplementos",
 ];
 // ============================================================
 
