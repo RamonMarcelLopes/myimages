@@ -39,6 +39,30 @@
       <input type="text" id="searchInput" placeholder="buscar imagem..." autocomplete="off" />
     </div>
     <span id="img-count">0 imagens</span>
+
+    <!-- Ordenação -->
+    <select id="sortSelect">
+      <option value="default">ordem padrão</option>
+      <option value="name-asc">nome A→Z</option>
+      <option value="name-desc">nome Z→A</option>
+      <option value="folder">pasta</option>
+    </select>
+
+    <!-- Modo de visualização -->
+    <div class="view-toggle">
+      <button class="view-btn active" id="btnGrid" title="Grid">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <rect x="0" y="0" width="7" height="7" rx="1"/><rect x="9" y="0" width="7" height="7" rx="1"/>
+          <rect x="0" y="9" width="7" height="7" rx="1"/><rect x="9" y="9" width="7" height="7" rx="1"/>
+        </svg>
+      </button>
+      <button class="view-btn" id="btnList" title="Lista">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <rect x="0" y="1" width="16" height="3" rx="1"/><rect x="0" y="7" width="16" height="3" rx="1"/>
+          <rect x="0" y="13" width="16" height="3" rx="1"/>
+        </svg>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -59,11 +83,16 @@
   <button class="lb-close" id="lbClose">✕</button>
   <button class="lb-nav lb-prev" id="lbPrev">‹</button>
   <button class="lb-nav lb-next" id="lbNext">›</button>
-  <div class="lb-content">
-    <img id="lbImg" src="" alt="" />
+  <div class="lb-wrap">
+    <div class="lb-img-container" id="lbImgContainer">
+      <img id="lbImg" src="" alt="" />
+    </div>
     <div class="lb-info">
       <span id="lbName"></span>
-      <button class="lb-copy" id="lbCopy">copiar caminho</button>
+      <div class="lb-actions">
+        <button class="lb-btn" id="lbCopy">copiar URL</button>
+        <button class="lb-btn lb-btn-green" id="lbDownload">baixar</button>
+      </div>
     </div>
   </div>
 </div>
