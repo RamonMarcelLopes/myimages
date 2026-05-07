@@ -20,7 +20,7 @@ const lbDownload  = document.getElementById("lbDownload");
 const toast       = document.getElementById("toast");
 const emptyState  = document.getElementById("emptyState");
 
-// ── Custom sort dropdown ─────────────────────────────────────
+// ── Custom sort dropdown ────────────────────────────────────
 let sortValue = "default";
 
 sortTrigger.addEventListener("click", (e) => {
