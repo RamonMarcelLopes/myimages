@@ -40,13 +40,19 @@
     </div>
     <span id="img-count">0 imagens</span>
 
-    <!-- Ordenação -->
-    <select id="sortSelect">
-      <option value="default">ordem padrão</option>
-      <option value="name-asc">nome A→Z</option>
-      <option value="name-desc">nome Z→A</option>
-      <option value="folder">pasta</option>
-    </select>
+    <!-- Ordenação (custom dropdown) -->
+    <div class="sort-wrap" id="sortWrap">
+      <button class="sort-trigger" id="sortTrigger">
+        <span id="sortLabel">ordem padrão</span>
+        <svg width="10" height="6" viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="currentColor"/></svg>
+      </button>
+      <ul class="sort-menu" id="sortMenu">
+        <li class="sort-opt active" data-value="default">ordem padrão</li>
+        <li class="sort-opt" data-value="name-asc">nome A→Z</li>
+        <li class="sort-opt" data-value="name-desc">nome Z→A</li>
+        <li class="sort-opt" data-value="folder">pasta</li>
+      </ul>
+    </div>
 
     <!-- Modo de visualização -->
     <div class="view-toggle">

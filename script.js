@@ -2,7 +2,10 @@ const imgList     = document.getElementById("imgList");
 const filterBar   = document.getElementById("filterBar");
 const searchInput = document.getElementById("searchInput");
 const imgCount    = document.getElementById("img-count");
-const sortSelect  = document.getElementById("sortSelect");
+const sortWrap    = document.getElementById("sortWrap");
+const sortTrigger = document.getElementById("sortTrigger");
+const sortMenu    = document.getElementById("sortMenu");
+const sortLabel   = document.getElementById("sortLabel");
 const btnGrid     = document.getElementById("btnGrid");
 const btnList     = document.getElementById("btnList");
 const lightbox    = document.getElementById("lightbox");
@@ -16,6 +19,28 @@ const lbCopy      = document.getElementById("lbCopy");
 const lbDownload  = document.getElementById("lbDownload");
 const toast       = document.getElementById("toast");
 const emptyState  = document.getElementById("emptyState");
+
+// ── Custom sort dropdown ─────────────────────────────────────
+let sortValue = "default";
+
+sortTrigger.addEventListener("click", (e) => {
+  e.stopPropagation();
+  sortWrap.classList.toggle("open");
+});
+
+document.addEventListener("click", () => sortWrap.classList.remove("open"));
+
+sortMenu.querySelectorAll(".sort-opt").forEach(opt => {
+  opt.addEventListener("click", () => {
+    sortValue = opt.dataset.value;
+    sortLabel.textContent = opt.textContent;
+    sortMenu.querySelectorAll(".sort-opt").forEach(o => o.classList.remove("active"));
+    opt.classList.add("active");
+    sortWrap.classList.remove("open");
+    pushState();
+    renderAll();
+  });
+});
 
 const EXTRAS = [
   "https://github.com/RamonMarcelLopes/RamonMarcelLopes/raw/output/github-contribution-grid-snake-dark.svg",
@@ -44,8 +69,12 @@ async function carregar() {
       return { src, name, folder, type };
     });
 
+    const { open } = readState();
     buildFilters();
     renderAll();
+    if (open !== null && open < filtered.length) {
+      openLightbox(open);
+    }
   } catch (e) {
     console.error("Erro ao carregar imagens:", e);
   }
@@ -58,7 +87,7 @@ function buildFilters() {
   folders.forEach((folder) => {
     const count = folder === "all" ? allImages.length : allImages.filter(i => i.folder === folder).length;
     const btn = document.createElement("button");
-    btn.className = "filter-btn" + (folder === "all" ? " active" : "");
+    btn.className = "filter-btn" + (folder === activeFolder ? " active" : "");
     btn.dataset.folder = folder;
     btn.textContent = folder === "all" ? `tudo (${count})` : `${folder} (${count})`;
     btn.addEventListener("click", () => setFilter(folder));
@@ -71,12 +100,12 @@ function setFilter(folder) {
   document.querySelectorAll(".filter-btn").forEach((b) => {
     b.classList.toggle("active", b.dataset.folder === folder);
   });
+  pushState();
   renderAll();
 }
 
 // ── Eventos ──────────────────────────────────────────────────
 searchInput.addEventListener("input", renderAll);
-sortSelect.addEventListener("change", renderAll);
 
 btnGrid.addEventListener("click", () => {
   viewMode = "grid";
@@ -94,10 +123,39 @@ btnList.addEventListener("click", () => {
   renderAll();
 });
 
+// ── URL state ────────────────────────────────────────────────
+function pushState(extra = {}) {
+  const params = new URLSearchParams();
+  if (activeFolder !== "all") params.set("folder", activeFolder);
+  if (sortValue !== "default") params.set("sort", sortValue);
+  if (extra.open != null) params.set("open", extra.open);
+  const qs = params.toString();
+  history.pushState({}, "", qs ? "?" + qs : location.pathname);
+}
+
+function readState() {
+  const params = new URLSearchParams(location.search);
+  const folder = params.get("folder") || "all";
+  const sort   = params.get("sort") || "default";
+  const open   = params.get("open");
+
+  activeFolder = folder;
+
+  sortValue = sort;
+  const optEl = sortMenu.querySelector(`[data-value="${sort}"]`);
+  if (optEl) {
+    sortLabel.textContent = optEl.textContent;
+    sortMenu.querySelectorAll(".sort-opt").forEach(o => o.classList.remove("active"));
+    optEl.classList.add("active");
+  }
+
+  return { open: open ? parseInt(open) : null };
+}
+
 // ── Render ───────────────────────────────────────────────────
 function renderAll() {
   const query = searchInput.value.toLowerCase().trim();
-  const sort  = sortSelect.value;
+  const sort  = sortValue;
 
   filtered = allImages.filter((img) => {
     const folderMatch  = activeFolder === "all" || img.folder === activeFolder;
@@ -110,7 +168,7 @@ function renderAll() {
   if (sort === "name-desc") filtered.sort((a, b) => b.name.localeCompare(a.name));
   if (sort === "folder")    filtered.sort((a, b) => a.folder.localeCompare(b.folder) || a.name.localeCompare(b.name));
 
-  imgCount.textContent = `${filtered.length} imagem${filtered.length !== 1 ? "s" : ""}`;
+  imgCount.textContent = `${filtered.length} ${filtered.length !== 1 ? "imagens" : "imagem"}`;
 
   imgList.innerHTML = "";
   if (filtered.length === 0) {
@@ -211,15 +269,16 @@ function openLightbox(idx) {
   showLbImage();
   lightbox.classList.add("open");
   document.body.style.overflow = "hidden";
+  pushState({ open: idx });
 }
 
 function closeLightbox() {
   lightbox.classList.remove("open");
   document.body.style.overflow = "";
-  // Para vídeo se estiver tocando
   const vid = document.getElementById("lbVideo");
   if (vid) { vid.pause(); vid.src = ""; }
   resetZoom();
+  pushState(); // remove o ?open= da URL
 }
 
 function showLbImage() {
@@ -237,7 +296,7 @@ function showLbImage() {
     vid.id = "lbVideo";
     vid.src = item.src;
     vid.controls = true;
-    vid.autoplay = true;
+    vid.muted = false;
     vid.style.maxWidth = "100%";
     vid.style.maxHeight = "80vh";
     vid.style.borderRadius = "8px";
@@ -392,5 +451,17 @@ function showToast() {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.remove("show"), 2000);
 }
+
+// ── Voltar/avançar no browser ────────────────────────────────
+window.addEventListener("popstate", () => {
+  const { open } = readState();
+  buildFilters();
+  renderAll();
+  if (open !== null && open < filtered.length) {
+    openLightbox(open);
+  } else {
+    closeLightbox();
+  }
+});
 
 carregar();
